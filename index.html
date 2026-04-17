@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Floating Photos</title>
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  font-family: Arial;
+}
+
+/* Title */
+h1 {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  z-index: 10;
+}
+
+/* Floating images */
+.floating-img {
+  position: absolute;
+  width: 200px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+  animation: float 10s infinite linear;
+}
+
+/* Different speeds */
+.img1 { animation-duration: 12s; }
+.img2 { animation-duration: 18s; }
+.img3 { animation-duration: 14s; }
+
+@keyframes float {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  25%  { transform: translate(300px,100px) rotate(90deg); }
+  50%  { transform: translate(100px,300px) rotate(180deg); }
+  75%  { transform: translate(-200px,150px) rotate(270deg); }
+  100% { transform: translate(0,0) rotate(360deg); }
+}
+
+/* Particle canvas */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>How Oliver fooled the Internet for 7 Days 💫</h1>
+
+<!-- Your images -->
+<img class="floating-img img1" src="Image (10).jpeg" style="top:20%; left:10%;">
+<img class="floating-img img2" src="Image (11).jpeg" style="top:50%; left:40%;">
+<img class="floating-img img3" src="Image (12).jpeg" style="top:30%; left:70%;">
+
+<canvas id="particles"></canvas>
+
+<script>
+// -------- PARTICLES BACKGROUND --------
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 120; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 3,
+    dx: Math.random() - 0.5,
+    dy: Math.random() - 0.5
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "white";
+
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+
+    p.x += p.dx;
+    p.y += p.dy;
+
+    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+// resize fix
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
