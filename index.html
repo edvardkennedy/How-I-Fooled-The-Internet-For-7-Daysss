@@ -89,20 +89,24 @@ for (let i = 0; i < 120; i++) {
 const music = document.getElementById("bgmusic");
 
 function startMusic() {
-  music.currentTime = 40; // start at 40 seconds
-  music.play();
+  music.currentTime = 40;
+  const playPromise = music.play();
+
+  // Only catch if play() returns a promise (modern browsers)
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      console.log("Autoplay blocked. Click to start music.");
+
+      document.body.addEventListener("click", () => {
+        music.currentTime = 40;
+        music.play();
+      }, { once: true });
+    });
+  }
 }
 
-// Try autoplay when page loads
 window.addEventListener("load", () => {
-  startMusic().catch(() => {
-    console.log("Autoplay blocked. Waiting for user interaction.");
-
-    // fallback: start on first click
-    document.body.addEventListener("click", () => {
-      startMusic();
-    }, { once: true });
-  });
+  startMusic();
 });
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
